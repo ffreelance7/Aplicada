@@ -82,6 +82,14 @@
        bottom: 10px;
       height:  550px;
     }
+    #lines_height{
+    //  background-color: green;
+      position: fixed;
+      width: 50px;
+      left: 71%;
+      bottom: 10px;
+      height:  550px;
+    }
     </style>
   </head>
   <body>
@@ -113,6 +121,9 @@
       </div>
     </div>
       <div id="lines_mark">
+
+      </div>
+      <div id="lines_height">
 
       </div>
 
@@ -153,16 +164,19 @@
         milisecons_inv=9;
         secons_inv=secons_inv-1;
     }
+    if(secons%intervalo==0  && milisecons==0){
+      var heigh=$("#container").height();
+      var element='<div style="width:100% ;height:3px; background-color:red; position:absolute; bottom:'+heigh+'px">'+count+'-T</div>';
+      var element_h='<div style="width:100% ;height:3px; background-color:blue; position:absolute; bottom:'+heigh+'px">H-'+heigh+'</div>';
+          $("#lines_mark").append(element);
+          $("#lines_height").append(element_h);
+          count=count+1;
+    }
     $("#secons").text(secons);
     $("#milisecons").text(milisecons);
     $("#container").height(get_h(secons_inv+"."+milisecons_inv));
 
-    if(secons%intervalo==0  && milisecons==0){
-      var heigh=$("#container").height();
-      var element='<div style="width:100% ;height:3px; background-color:red; position:absolute; bottom:'+heigh+'px">'+count+'-T</div>';
-          $("#lines_mark").append(element);
-          count=count+1;
-    }
+
     if(parseFloat($("#container").height())<=0){
       clearInterval(time);
     }
@@ -190,7 +204,7 @@
     h=Math.pow(((t*a*Math.sqrt(2*g))/(2*a_m)),2);
     return h;
   }
-$( "#desllenar" ).click(function() {
+$( "#desllenar" ).click(function(){
   milisecons=0;
   secons=0;
   a=$("#slider-Agujero-area").slider("value");
