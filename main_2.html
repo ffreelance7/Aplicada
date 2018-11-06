@@ -106,6 +106,12 @@
           <div id="custom-handle-Tanque"class="ui-slider-handle"></div>
       </div>
     </div>
+    <div class="box">
+          <p>Intervalo de tiempo</p>
+        <div id="slider-intervalo">
+          <div id="custom-handle-intervalo"class="ui-slider-handle"></div>
+      </div>
+    </div>
       <div id="lines_mark">
 
       </div>
@@ -134,12 +140,12 @@
   var a_m;
   var g=9.78;
   var time_max;
+  var intervalo=5;
   var count=0;
 
   function myTimer(){
     if(milisecons==10){
         //milisecons_inv=
-
         milisecons=0;
         secons=secons+1;
     }
@@ -151,7 +157,7 @@
     $("#milisecons").text(milisecons);
     $("#container").height(get_h(secons_inv+"."+milisecons_inv));
 
-    if(secons%5==0  && milisecons==0){
+    if(secons%intervalo==0  && milisecons==0){
       var heigh=$("#container").height();
       var element='<div style="width:100% ;height:3px; background-color:red; position:absolute; bottom:'+heigh+'px">'+count+'-T</div>';
           $("#lines_mark").append(element);
@@ -189,6 +195,7 @@ $( "#desllenar" ).click(function() {
   secons=0;
   a=$("#slider-Agujero-area").slider("value");
   a_m=$("#slider-Tanque-area").slider("value");
+  intervalo=$("#slider-intervalo").slider("value");
   time_max=get_t($("#slider-altura").slider("value"));
   secons_inv=Math.round(time_max,0);
   time=setInterval(myTimer, 100);
@@ -196,7 +203,7 @@ $( "#desllenar" ).click(function() {
 var handle_tanque = $( "#custom-handle-Tanque" );
   $( "#slider-Tanque-area" ).slider({
     min: 5,
-    max: 30,
+    max: 60,
     create: function() {
       handle_tanque.text( $( this ).slider("value"));
     },
@@ -228,5 +235,17 @@ var handle_Agujero = $( "#custom-handle-Agujero" );
         handle_altura.text( ui.value );
       }
     });
+    var handle_intervalo = $( "#custom-handle-intervalo" );
+      $( "#slider-intervalo" ).slider({
+        min: 5,
+        step:5,
+        max: 120,
+        create: function() {
+          handle_intervalo.text( $( this ).slider("value"));
+        },
+        slide: function( event, ui ) {
+          handle_intervalo.text( ui.value );
+        }
+      });
   </script>
 </html>
