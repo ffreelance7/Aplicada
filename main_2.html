@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <title></title>
+    <style media="screen">
+    body{
+      margin: 0px;
+      padding: 0px;
+    }
+    #time{
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      border-radius: 10px 10px 10px 10px;
+      border: 1px solid #616161;
+      width: 200px;
+      height: 180px;
+    }
+    #img-content{
+      z-index: 2;
+      left: 50%;
+       position: fixed;
+       bottom: 10px;
+        transform: translate(-50%, 0);
+    }
+    #secons{
+        text-align: center;
+        font-size: 100px;
+    }
+    #milisecons{
+        text-align: center;
+        font-size: 40px;
+    }
+    #container{
+      z-index: 1;
+       left: 50%;
+        position: fixed;
+        bottom: 14px;
+         transform: translate(-50%, 0);
+
+        width: 547px;
+        height: 0px;
+        background-color: #91FFEE;
+    }
+    #cotent-control{
+      padding: 10px;
+      background-color: #505050;
+    }
+    #llenar{
+      padding: 10px;
+      background: #FFC300;
+      color: #fff;
+      font-size:1em;
+      border: none;
+    }
+    #desllenar{
+      padding: 10px;
+      font-size: 1em;
+      background: #FF5733;
+      color: #fff;
+      border: none;
+    }
+    .box{
+      float: right;
+      display: inline-block;
+      width: 200px;
+      margin-right:30px;
+    }
+    .box p{
+      color: #fff;
+      margin: 0px 0px 5px 0px;
+    }
+    #lines_mark{
+    //  background-color: red;
+      position: fixed;
+      width: 25px;
+      left: 28%;
+       bottom: 10px;
+      height:  550px;
+    }
+    </style>
+  </head>
+  <body>
+    <section id="cotent-control">
+      <button type="button" name="button" id="llenar">llenar</button>
+      <button type="button" name="button" id="desllenar">desllenar</button>
+      <div class="box">
+          <p>Altura de Agua</p>
+        <div id="slider-altura">
+          <div id="custom-handle-altura"class="ui-slider-handle"></div>
+      </div>
+    </div>
+    <div class="box">
+          <p>Area del Agujero</p>
+        <div id="slider-Agujero-area">
+          <div id="custom-handle-Agujero"class="ui-slider-handle"></div>
+      </div>
+    </div>
+    <div class="box">
+          <p>Area del Tanque</p>
+        <div id="slider-Tanque-area">
+          <div id="custom-handle-Tanque"class="ui-slider-handle"></div>
+      </div>
+    </div>
+      <div id="lines_mark">
+
+      </div>
+
+    </section>
+    <img src="content_1.png" alt="" id="img-content">
+      <div id="time">
+          <div id="secons">
+                0
+          </div>
+          <div id="milisecons">
+              000
+          </div>
+      </div>
+      <div id="container">
+
+      </div>
+  </body>
+  <script type="text/javascript">
+  var milisecons;
+  var secons;
+  var milisecons_inv=0;
+  var secons_inv;
+  var time;
+  var a;
+  var a_m;
+  var g=9.78;
+  var time_max;
+  var count=0;
+
+  function myTimer(){
+    if(milisecons==10){
+        //milisecons_inv=
+
+        milisecons=0;
+        secons=secons+1;
+    }
+    if(milisecons_inv==-1){
+        milisecons_inv=9;
+        secons_inv=secons_inv-1;
+    }
+    $("#secons").text(secons);
+    $("#milisecons").text(milisecons);
+    $("#container").height(get_h(secons_inv+"."+milisecons_inv));
+
+    if(secons%5==0  && milisecons==0){
+      var heigh=$("#container").height();
+      var element='<div style="width:100% ;height:3px; background-color:red; position:absolute; bottom:'+heigh+'px">'+count+'-T</div>';
+          $("#lines_mark").append(element);
+          count=count+1;
+    }
+    if(parseFloat($("#container").height())<=0){
+      clearInterval(time);
+    }
+    milisecons_inv=milisecons_inv-1;
+    milisecons=milisecons+1;
+  }
+  $( "#llenar" ).click(function(){
+    $("#lines_mark").html("");
+    count=0;
+    milisecons=0;
+    secons=0;
+    var Altura = $("#slider-altura").slider("value");
+    $("#container").animate({
+        height:Altura,
+        opacity: 1
+      }, 3000);
+  });
+  function get_t(h){
+    var t;
+    t=(2*a_m*Math.sqrt(h))/(a*Math.sqrt(2*g));
+    return t;
+  }
+  function get_h(t){
+    var h;
+    h=Math.pow(((t*a*Math.sqrt(2*g))/(2*a_m)),2);
+    return h;
+  }
+$( "#desllenar" ).click(function() {
+  milisecons=0;
+  secons=0;
+  a=$("#slider-Agujero-area").slider("value");
+  a_m=$("#slider-Tanque-area").slider("value");
+  time_max=get_t($("#slider-altura").slider("value"));
+  secons_inv=Math.round(time_max,0);
+  time=setInterval(myTimer, 100);
+});
+var handle_tanque = $( "#custom-handle-Tanque" );
+  $( "#slider-Tanque-area" ).slider({
+    min: 5,
+    max: 30,
+    create: function() {
+      handle_tanque.text( $( this ).slider("value"));
+    },
+    slide: function( event, ui ) {
+      handle_tanque.text( ui.value );
+    }
+  });
+var handle_Agujero = $( "#custom-handle-Agujero" );
+    $( "#slider-Agujero-area" ).slider({
+      min: 1,
+      max: 10,
+      create: function() {
+        handle_Agujero.text( $( this ).slider("value"));
+      },
+      slide: function( event, ui ) {
+        handle_Agujero.text( ui.value );
+      }
+    });
+
+  var handle_altura = $( "#custom-handle-altura" );
+    $( "#slider-altura" ).slider({
+      min: 10,
+      step:10,
+      max: 550,
+      create: function() {
+        handle_altura.text( $( this ).slider("value"));
+      },
+      slide: function( event, ui ) {
+        handle_altura.text( ui.value );
+      }
+    });
+  </script>
+</html>
